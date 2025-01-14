@@ -10,12 +10,24 @@ export default function CancelMeetingButton({ meetingId }) {
 
   const { loading, error, fn: fnCancelMeeting } = useFetch(cancelMeeting);
 
+  // const handleCancel = async () => {
+  //   if (window.confirm("Are you sure you want to cancel this meeting?")) {
+  //     await fnCancelMeeting(meetingId);
+  //     router.refresh();
+  //   }
+  // };
   const handleCancel = async () => {
     if (window.confirm("Are you sure you want to cancel this meeting?")) {
-      await fnCancelMeeting(meetingId);
-      router.refresh();
+      try {
+        await fnCancelMeeting(meetingId);
+        alert("Meeting cancelled successfully!");
+        router.refresh();
+      } catch (error) {
+        console.error("Cancellation failed:", error);
+      }
     }
   };
+  
 
   return (
     <div className="flex flex-col gap-1">

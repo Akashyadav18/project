@@ -81,13 +81,26 @@ export async function cancelMeeting(meetingId) {
 
   const calendar = google.calendar({ version: "v3", auth: oauth2Client });
 
+  // try {
+  //   await calendar.events.delete({
+  //     calendarId: "primary",
+  //     eventId: meeting.googleEventId,
+  //   });
+  // } catch (error) {
+  //   console.error("Failed to delete event from Google Calendar:", error);
+  // }
   try {
-    await calendar.events.delete({
+      await calendar.events.patch({
       calendarId: "primary",
       eventId: meeting.googleEventId,
+      resource: {
+        status: "cancelled",
+      },
+      sendUpdates: "all", // Notify attendees
     });
   } catch (error) {
-    console.error("Failed to delete event from Google Calendar:", error);
+    console.error("Error cancelling event:", error);
+    throw new Error("Failed to cancel event in Google Calendar");
   }
 
   // Delete the meeting from the database
